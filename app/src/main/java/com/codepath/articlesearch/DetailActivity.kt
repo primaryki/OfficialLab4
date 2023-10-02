@@ -34,7 +34,7 @@ class DetailActivity : AppCompatActivity() {
 
         // TODO: Load the media image
         Glide.with(this)
-            .load(movie.mediaImageUrl)
+            .load(movie.movieImageUrl)
             .into(mediaImageView)
     }
 }

@@ -31,8 +31,12 @@ data class Movie(
     val overview: String?,
     @SerialName("poster_path")
     val poster: String?,
+    @SerialName("backdrop_path")
+    val backdrop: String?,
     ): java.io.Serializable {
     val mediaImageUrl = "https://image.tmdb.org/t/p/w500${poster}"
+    val movieImageUrl = "https://image.tmdb.org/t/p/w500${backdrop}"
+
 
 //     Accessing an item within an item
 //    @SerialName("name")
