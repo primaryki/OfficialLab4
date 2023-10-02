@@ -27,6 +27,7 @@
         android:id="@+id/mediaTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="12sp"
         android:layout_marginTop="16dp"
         android:text="Movie Title"
         android:textAppearance="?attr/textAppearanceListItem"
