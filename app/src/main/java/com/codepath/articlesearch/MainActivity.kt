@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.codepath.articlesearch.databinding.ActivityMainBinding
 import com.codepath.asynchttpclient.AsyncHttpClient
-import com.codepath.asynchttpclient.BuildConfig
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler
 import kotlinx.serialization.json.Json
 import okhttp3.Headers
@@ -23,12 +23,12 @@ fun createJson() = Json {
 private const val TAG = "MainActivity/"
 private const val SEARCH_API_KEY = com.codepath.articlesearch.BuildConfig.API_KEY
 private const val ARTICLE_SEARCH_URL =
-    "https://api.nytimes.com/svc/search/v2/articlesearch.json?api-key=${SEARCH_API_KEY}"
+    "https://api.themoviedb.org/3/tv/top_rated?api_key=${SEARCH_API_KEY}"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var articlesRecyclerView: RecyclerView
     private lateinit var binding: ActivityMainBinding
-    private val articles= mutableListOf<Article>()
+    private val movies= mutableListOf<Movie>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,13 +39,14 @@ class MainActivity : AppCompatActivity() {
 
         articlesRecyclerView = findViewById(R.id.articles)
         // TODO: Set up ArticleAdapter with articles
-        val articleAdapter = ArticleAdapter(this, articles)
+        val articleAdapter = ArticleAdapter(this, movies)
         articlesRecyclerView.adapter = articleAdapter
+        articlesRecyclerView.layoutManager = GridLayoutManager(this,2)
 
-        articlesRecyclerView.layoutManager = LinearLayoutManager(this).also {
-            val dividerItemDecoration = DividerItemDecoration(this, it.orientation)
-            articlesRecyclerView.addItemDecoration(dividerItemDecoration)
-        }
+//        articlesRecyclerView.layoutManager = LinearLayoutManager(this).also {
+//            val dividerItemDecoration = DividerItemDecoration(this, it.orientation)
+//            articlesRecyclerView.addItemDecoration(dividerItemDecoration)
+//        }
 
         val client = AsyncHttpClient()
         client.get(ARTICLE_SEARCH_URL, object : JsonHttpResponseHandler() {
@@ -61,16 +62,15 @@ class MainActivity : AppCompatActivity() {
             override fun onSuccess(statusCode: Int, headers: Headers, json: JSON) {
                 Log.i(TAG, "Successfully fetched articles: $json")
                 try {
-                    // TODO: Create the parsedJSON
-
+                    // TODO: Create the parsedJSON (below)
                     // TODO: Do something with the returned json (contains article information)
                     val parsedJson = createJson().decodeFromString(
-                        SearchNewsResponse.serializer(),
+                        SearchPeopleResponse.serializer(),
                         json.jsonObject.toString()
                     )
                     // TODO: Save the articles and reload the screen
-                        parsedJson.response?.docs?.let { list ->
-                            articles.addAll(list)
+                        parsedJson.response?.let { list ->
+                            movies.addAll(list)
                             articleAdapter.notifyDataSetChanged()
                         }
                 } catch (e: JSONException) {
